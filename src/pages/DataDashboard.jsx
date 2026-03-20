@@ -1,14 +1,22 @@
 import React, { useState, useEffect, useRef } from 'react'
 import ReactECharts from 'echarts-for-react'
-import chinaMap from '../components/mapData/china.json'
 import * as echarts from 'echarts'
 
 const DataDashboard = () => {
   const [selectedProvince, setSelectedProvince] = useState(null)
+  const [chinaMap, setChinaMap] = useState(null)
   const chartRef = useRef(null)
 
   useEffect(() => {
-    echarts.registerMap('china', chinaMap)
+    fetch('/china.json')
+      .then(response => response.json())
+      .then(data => {
+        setChinaMap(data)
+        echarts.registerMap('china', data)
+      })
+      .catch(error => {
+        console.error('加载地图数据失败:', error)
+      })
   }, [])
 
   const provinceData = [
